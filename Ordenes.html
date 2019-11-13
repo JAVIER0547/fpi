@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>ra13037</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="assets/css/Header-Blue-1.css">
+    <link rel="stylesheet" href="assets/css/Header-Blue.css">
+    <link rel="stylesheet" href="assets/css/scrollSpyModal.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <div>
+        <div class="header-blue">
+            <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
+                <div class="container-fluid"><a class="navbar-brand" href="index.html">Sistema Post</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                    <div
+                        class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Home</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="Ordenes.html">Ordenes</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="Menu.html">Menu</a></li>
+                            <li class="nav-item" role="presentation"></li>
+                            <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">Administrar</a>
+                                <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="productos.html">Productos</a><a class="dropdown-item" role="presentation" href="categorias.html">Categorias</a></div>
+                            </li>
+                        </ul>
+                </div>
+        </div>
+        </nav>
+    </div>
+    </div>
+    <div class="container" id="ordenes">
+        <div class="row mt-4">
+            <div class="col">
+                <form>
+                    <div class="form-group row"><i class="fa fa-search"></i><input class="form-control col-5 col-md-7 col-md-7" type="search" id="busqueda1" placeholder="Buscar" v-model="textoBusqueda">
+
+                    <div class="form-check col-6 col-md-4 col-md-3"><input class="form-check-input col-form-label" type="checkbox" id="formCheck-1" v-model="activas"><label class="form-check-label col-form-label" for="formCheck-1">Ordenes Activas</label></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-12 col-md-4 px-2 px-sm-0">
+                <div class="btn-group-vertical btn-group-lg border-dark flex-column flex-sm-row flex-md-column col-12" role="group"><button class="btn btn-primary text-left" id="boton1" type="button" data-toggle="modal" data-target="#modal1"><i class="fa fa-plus"></i>Nueva Orden</button><button class="btn btn-primary text-left" id="boton2" type="button" data-toggle="modal"
+                        data-target="#modal3"><i class="icon ion-android-cart"></i>Agregar Producto</button><button class="btn btn-primary text-left" id="botonCobrar1" type="button" data-toggle="modal" data-target="#cobrar"><i class="fa fa-dollar"></i>Cobrar Orden</button>
+                    <button class="btn btn-primary text-left" type="button" v-on:click="mostrarEliminar" ><i class="fa fa-eraser"></i>Eliminar Orden</button>
+                </div>
+            </div>
+
+            
+
+            <div class="col col-lg-7">
+
+                <div class="alert collapse shadow mt-2" role="alert" id="alerta"
+                    v-bind:class="{'alert-success': alerta.tipo == 0, 'alert-danger': alerta.tipo == 1}">
+                    <span>
+                        <strong>{{ alerta.titulo }} :</strong> {{ alerta.mensaje }}.
+                    </span>
+                    <i class="fa fa-close close" v-on:click="cerrarAlerta();"></i>
+                </div>
+                
+                <div class="table-responsive text-warning border-primary" id="table1">
+                    <table class="table table-striped table-hover">
+                        <thead class="text-dark bg-secondary">
+                             <tr>
+                                <th class="d-none d-md-table-cell"><a href="#" v-on:click.prevent="orderBy('ORDEN')">Orden</th>
+                                <th class="d-none d-md-table-cell"><a href="#" v-on:click.prevent="orderBy('CLIENTE')">Cliente</a></th>
+                                <th><a href="#" v-on:click.prevent="orderBy('MESA')">Mesa</a></th>
+                                <th class="d-none d-md-table-cell"><a href="#" v-on:click.prevent="orderBy('MESERO')">Mesero</a></th>
+                                <th><a href="#" v-on:click.prevent="orderBy('PRECIO')">Precio</a></th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-dark dobleClick">
+                            <tr class="dobleClic" v-for="(ord, index) in ordenes" v-show="buscar(index) && filtrarOrden(index)" v-on:dblclick="mostrarDetalle(index)" v-on:click="seleccionarFila(index)" v-bind:class="{'font-weight-bold': (ordenSelected == index) && (seleccionado == 1)}">
+                                <td>{{ ord.idOrden }}</td>
+                                <td class="d-none d-md-table-cell">
+                                    <i class="fa fa-arrow-right" v-show="(ordenSelected == index) && (seleccionado == 1)"></i>
+                                    {{ord.cliente}}
+                                </td>
+                                <td>{{ord.mesa}}</td>
+                                <td class="d-none d-md-table-cell">{{ord.mesero}}</td>
+                                <td>$ {{ord.total}}</td>
+                                <td>{{ord.estado}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade col-12 col-md-12 col-sm-12 px-2 px-sm-0" role="dialog" tabindex="-1" id="modal3">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Agregar Productos</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body"><button class="btn btn-primary col-4" type="button">Entradas</button><button class="btn btn-primary col-4" type="button">Platos</button><button class="btn btn-primary col-4" type="button">Postres</button>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption>Productos</caption>
+                            <thead>
+                                <tr>
+                                    <th>Productos</th>
+                                    <th></th>
+                                    <th>Cantidad</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>sopa de pollo</td>
+                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-minus"></i></button></td>
+                                    <td>1</td>
+                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td>Carne Asada</td>
+                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-minus"></i></button></td>
+                                    <td>2</td>
+                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" id="botonmodal1" type="button" data-toggle="modal" data-target="#modal4" data-dismiss="modal">Siguiente</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal4">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Detalle</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <div>
+                        <div><label class="text-truncate">Mesa:</label></div>
+                        <div><label>Cliente:</label></div>
+                        <div><label>Mesero:</label></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption>Detalle</caption>
+                            <thead>
+                                <tr>
+                                    <th>Cantidad</th>
+                                    <th>Productos</th>
+                                    <th class="d-none d-sm-table-cell">Precio</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Sodas</td>
+                                    <td class="d-none d-sm-table-cell">$0.75</td>
+                                    <td>$0.75</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Carne Asada</td>
+                                    <td class="d-none d-sm-table-cell">$2.99</td>
+                                    <td>$2.99</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center d-none d-sm-table-cell"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center">Total</td>
+                                    <td>$3.74</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" role="dialog" tabindex="-1" id="cobrar">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title bg-info">Cobrar Orden {{ordenes[ordenSelected].idOrden}} </h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <form>
+                            <div class="form-group"><label>Cliente: {{ordenes[ordenSelected].cliente}}</label></div>
+                            <div class="form-group"><label>Mesero: {{ordenes[ordenSelected].mesero}}</label></div>
+                            <div class="form-group"><label>Mesa: {{ordenes[ordenSelected].mesa}}</label></div>
+                            <div class="form-group"><label><strong>Total : {{ordenes[ordenSelected].total}}</strong></label></div>
+                            <div class="form-group row"><label class="col-md-6"><strong>Ingrese efectivo:</strong></label><input class="form-control col-md-6" type="text" v-model="efectivo"></div>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Cancelar</button><button class="btn btn-primary" id="idBoton1" type="button" data-dismiss="modal" v-on:click="cobrar">Cobrar</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info alerta collapse rounded shadow" role="alert" id="alertaCambio"><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+            <span class="mr-5">{{alertaCambio.mensaje}}</span>
+        </div>
+
+    <div class="modal fade" role="dialog" tabindex="-1" id="detalle">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Detalle de la orden {{ordenes[ordenSelected].idOrden}} </h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group d-inline-block col-12"><label>Mesa: {{ordenes[ordenSelected].mesa}} &nbsp;</label></div>
+                        <div class="form-group d-inline-block col-12 col-md-6"><label>Cliente: {{ordenes[ordenSelected].cliente}} </label></div>
+                        <div class="form-group d-inline-block col-12 col-md-6"><label>Mesero: {{ordenes[ordenSelected].mesero}} </label></div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th class="d-none d-md-table-cell">Precio</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(dOrden, index) in detalles" v-show="dOrden.idOrden == ordenes[ordenSelected].idOrden">
+                                        <td>{{nombreProducto(dOrden.idProducto)}}</td>
+                                        <td>{{dOrden.cantidad}}</td>
+                                        <td class="d-none d-md-table-cell">$ {{dOrden.precioUnitario}}</td>
+                                        <td>$ {{dOrden.precioUnitario*dOrden.cantidad}}</td>
+                                    </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                        <td></td>
+                                        <td class="d-none d-md-table-cell"></td>
+                                        <td><strong>Total</strong>:</td>
+                                        <td><strong>$ {{ordenes[ordenSelected].total}}</strong></td>
+                                    </tr>
+                            </tfoot>
+                        </table>
+                    </div><textarea class="w-100" disabled="" v-model="ordenes[ordenSelected].observacion">Sin obsevaciones</textarea></div>
+                <div class="modal-footer"><button class="btn btn-primary" type="button" data-dismiss="modal">Aceptar</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" role="dialog" tabindex="-1" id="eliminar">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h4 class="modal-title">Eliminar</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group"><label>Desea elminar la orden <strong>{{ordenes[ordenSelected].idOrden}}</strong></label></div>
+                        </form>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-danger" type="button" v-on:click="eliminar">Aceptar</button></div>
+                </div>
+            </div>
+        </div>
+    
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal1">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Nueva orden</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <nav class="navbar navbar-light navbar-expand-md" id="menuNuevaOrden">
+                        <div class="container-fluid"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-2"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                            <div class="collapse navbar-collapse" id="navcol-2">
+                                <ul class="nav navbar-nav">
+                                    <li class="nav-item" role="presentation"><a class="nav-link" href="#paso1">Paso 1</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" href="#paso2">Paso 2</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" href="#paso3">Paso 3</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <div class="container-fluid text-center">
+                        <div id="modalSpy" class="mt-4 text-center p-4" data-spy="scroll" data-target="menuNuevaOrden" data-offset="0">
+                            <div id="paso1" class="row my-5">
+                                <div class="col">
+                                    <form>
+                                        <div class="form-group row"><label class="col-form-label">Mesero:</label><input class="form-control col-4" type="text"></div>
+                                        <div class="form-group row"><label class="col-form-label">Mesa &nbsp; :</label><input class="form-control col-4" type="text"></div>
+                                        <div class="form-group row"><label class="col-form-label">Cliente:</label><input class="form-control col-4 mr-2" type="text"><button class="btn btn-info" type="button"><i class="fa fa-play-circle-o"></i></button></div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="paso2" class="row mt-4">
+                                <div class="col"><button class="btn btn-primary col-4" type="button">Entradas</button><button class="btn btn-primary col-4" type="button">Platos</button><button class="btn btn-primary col-4" type="button">Postres</button>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <caption>Productos</caption>
+                                            <thead>
+                                                <tr>
+                                                    <th>Productos</th>
+                                                    <th></th>
+                                                    <th>Cantidad</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>sopa de pollo</td>
+                                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-minus"></i></button></td>
+                                                    <td>1</td>
+                                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus"></i></button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Carne Asada</td>
+                                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-minus"></i></button></td>
+                                                    <td>2</td>
+                                                    <td><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus"></i></button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive col-12 col-md-12" id="paso3">
+                                <table class="table">
+                                    <caption>Resumen</caption>
+                                    <thead>
+                                        <tr>
+                                            <th>Cantidad</th>
+                                            <th>Producto</th>
+                                            <th class="d-none d-sm-table-cell">Precio Unitario</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Sopas</td>
+                                            <td class="d-none d-sm-table-cell">$3.25</td>
+                                            <td>$3.25</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>Sodas</td>
+                                            <td class="d-none d-sm-table-cell">$1.25</td>
+                                            <td>$1.25</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td class="d-none d-sm-table-cell"></td>
+                                            <td>Total</td>
+                                            <td>$4.50</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="alert alert-success collapse" role="alert" id="idAlert"><span><strong>Total: &nbsp; $18.98 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Efectivo: $20 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cambio: &nbsp;$1.02</strong><br></span></div>
+    </div>
+    
+        
+        
+        
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/vue.js"></script>
+    <script src="assets/js/axios.min.js"></script>
+    <script src="assets/js/ordenes.js"></script>
+    <script src="assets/js/funciones.js"></script>
+
+</body>
+
+</html>

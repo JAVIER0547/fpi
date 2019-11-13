@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>FPI-1</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="assets/css/Header-Blue-1.css">
+    <link rel="stylesheet" href="assets/css/Header-Blue.css">
+    <link rel="stylesheet" href="assets/css/scrollSpyModal.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <div>
+        <div class="header-blue">
+            <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
+                <div class="container-fluid"><a class="navbar-brand" href="index.html">Sistema Post</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                    <div
+                        class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Home</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="Ordenes.html">Ordenes</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="Menu.html">Menu</a></li>
+                            <li class="nav-item" role="presentation"></li>
+                            <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">Administrar</a>
+                                <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="productos.html">Productos</a><a class="dropdown-item" role="presentation" href="categorias.html">Categorias</a></div>
+                            </li>
+                        </ul>
+                </div>
+        </div>
+        </nav>
+    </div>
+    </div>
+
+    <div id="AdminProductos" class="container">
+        <div class="row mt-4">
+            <div class="col col-md-3">
+                
+                <div class="btn-group-vertical col flex-row flex-md-column" role="group">
+                    <button class="btn btn-primary" id="btnBebidas" type="button" v-on:click.prevent="categoriaSelected=Cate.idCategoria;" v-for="Cate in categorias"> {{ Cate.nombreCategoria }} </button>
+                </div>
+            </div>
+            <div class="col col-md-8">
+                <div class="row">
+                    <div class="col">
+                        <form>
+                            <div class="form-group row"><label class="col-form-label col-md-2">Buscar</label><input class="form-control col-md-9" type="search" v-model="textoBusqueda"></div>
+
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#productos" v-on:click="mostrarAgregar">Agregar</button>
+
+                                         
+
+                                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#productos"
+                                        v-on:click="mostrarModificar">Modificar</button>
+
+                                        <button class="btn btn-primary" type="button" v-on:click="mostrarEliminar">Eliminar</button>
+                                    </div>
+                                    <div class="alert alert-success collapse" role="alert"
+                                         id="miAlerta"><span><strong>{{ alerta.titulo }} :</strong>&nbsp;{{ alerta.mensaje }}.</span><i class="fa fa-close close" v-on:click="cerrarAlerta();"></i></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><a href="#" v-on:click.prevent="orderBy('ID')">Id&nbsp;<i class="fa fa-long-arrow-up" v-show="orderByCampo=='ID' &amp;&amp; orderByAsc==1"></i><i class="fa fa-long-arrow-down" v-show="orderByCampo=='ID' &amp;&amp; orderByAsc==-1"></i></a></th>
+                                 <th><a href="#" v-on:click.prevent="orderBy('NOMBRE')">Nombre<i class="fa fa-long-arrow-up" v-show="orderByCampo=='NOMBRE' &amp;&amp; orderByAsc==1"></i><i class="fa fa-long-arrow-down" v-show="orderByCampo=='NOMBRE' &amp;&amp; orderByAsc==-1"></i></a></th>
+                                 <th><a href="#" v-on:click.prevent="orderBy('PRECIO')">Precio&nbsp;<i class="fa fa-long-arrow-up" v-show="orderByCampo=='PRECIO' &amp;&amp; orderByAsc==1"></i><i class="fa fa-long-arrow-down" v-show="orderByCampo=='PRECIO' &amp;&amp; orderByAsc==-1"></i></a></th>
+                                 <th>Prep</th>
+                                 <th>Categoria</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="list-group-item-action" v-for="(elProd, index) in productos" v-show="elProd.idCategoria==categoriaSelected &amp;&amp; buscar(index)" v-on:click="productoSelected=index;" v-bind:class="{ 'font-weight-bold' : productoSelected==index }">
+                            <td><i class="fa fa-arrow-right" v-show="productoSelected==index"></i>{{ elProd.idProducto }}</td>
+                            <td>{{ elProd.nombreProducto }}</td>
+                            <td>$ {{ elProd.precio }}</td>
+                            <td><i class="fa fa-motorcycle" v-show="elProd.esPreparado==0"></i><i class="fas fa-hamburger" v-show="elProd.esPreparado==1"></i></td>
+                            <td>{{ nombreCategoria(elProd.idCategoria) }}<br></td>
+                            <td>&nbsp;<a href="#"><i class="fa fa-edit" v-on:click="mostrarModificar"></i>&nbsp;<i class="fa fa-trash-o" v-on:click="mostrarEliminar"></i></a>&nbsp;</td>
+                             </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" role="dialog" tabindex="-1" id="modalAgregar">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Productos</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <form>
+                        <!-- <div class="form-group row"></div>
+                        <div class="form-group row"><label class="col-form-label col-4">Categoria:</label><select class="form-control col-3"><optgroup label="Opciones"><option value="12" selected="">Bebidas</option><option value="12" selected="">Platos</option><option value="13">Entradas</option><option value="14">Postres</option></optgroup></select></div>
+ -->
+                        <div class="input-group">
+    <div class="input-group-prepend"><span class="input-group-text">Categoría:</span></div>
+    
+    <select v-model="nuevoProducto.idCategoria">
+    <option v-for="option in categorias" v-bind:value="option.idCategoria">
+        {{option.nombreCategoria}}
+    </option>
+</select>
+
+</div>
+
+                       <div class="form-group row"><label class="col-form-label col-4">Nombre:</label><input class="form-control col-3" type="text" v-model="nuevoProducto.nombreProducto"></div>
+                        <div class="form-group row"><label class="col-form-label col-4">Precio:</label><input class="form-control col-3" type="text" v-model="nuevoProducto.precio"></div>
+                        
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text">Es Preparado:</span></div>
+                            <div class="input-group-append"><input type="checkbox" v-model="nuevoProducto.esPreparado" size="80px" style="margin-top: 15px;margin-left: 25px;"></div>
+                        </div>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Cancelar</button><button class="btn btn-primary" type="button" v-on:click="agregarProducto">Agregar</button></div>
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade bg-dark" role="dialog" tabindex="-1" id="modalModificar">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Modificar Producto</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                    <div class="modal-body"><div class="input-group">
+    <div class="input-group-prepend"><span class="input-group-text">Categoría:</span></div>
+    
+    <select v-model="productos[productoSelected].idCategoria">
+    <option v-for="option in categorias" v-bind:value="option.idCategoria">
+        {{option.nombreCategoria}}
+    </option>
+</select>
+
+</div>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text">Nombre:</span></div><input class="form-control" type="text" v-model="productos[productoSelected].nombreProducto">
+                            <div class="input-group-append"></div>
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text">Precio:</span></div><input class="form-control" type="text" v-model="productos[productoSelected].precio">
+                            <div class="input-group-append"></div>
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text">Es Preparado:</span></div>
+                            <div class="input-group-append"><input type="checkbox" v-model="productos[productoSelected].esPreparado" size="80px" style="margin-top: 15px;margin-left: 25px;"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Cancelar</button><button class="btn btn-primary" type="button" data-dismiss="modal" v-on:click="modificarProducto">Modificar</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" role="dialog" tabindex="-1" id="modalEliminar">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h4 class="modal-title">Eliminar Producto {{ this.productos[this.productoSelected].idProducto&nbsp;}}</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Cancelar</button><button class="btn btn-primary btn-danger" type="button" data-dismiss="modal" v-on:click="eliminarProducto">Eliminar</button></div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    
+
+    
+    
+    
+    
+    <script src="assets/js/axios.min.js"></script>
+    <script src="assets/js/vue.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/funciones.js"></script>
+    <script src="assets/js/productos.js"></script>
+</body>
+
+</html>

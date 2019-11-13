@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>orden</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="assets/css/Header-Blue-1.css">
+    <link rel="stylesheet" href="assets/css/Header-Blue.css">
+    <link rel="stylesheet" href="assets/css/scrollSpyModal.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <div class="header-blue">
+        <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
+            <div class="container-fluid"><a class="navbar-brand" href="index.html">Sistema Post</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse"
+                    id="navcol-1">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="Ordenes.html">Ordenes</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="Menu.html">Menu</a></li>
+                        <li class="nav-item" role="presentation"></li>
+                        <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">Administrar</a>
+                            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="productos.html">Productos</a><a class="dropdown-item" role="presentation" href="categorias.html">Categorias</a></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div><div id="contenedor" class="container">
+        <div class="row mt-4">
+            <div class="col col-md-3">
+                <div class="btn-group-vertical col flex-row flex-sm-column" role="group">
+                	<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#categoria" @click="mostrarAgregar">Agregar</button>
+                	<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#categoria" @click="mostrarModificar">Modificar</button>
+                	<button class="btn btn-primary" type="button"  @click="mostrarEliminar">Eliminar</button></div>
+            </div>
+
+            <div class="col col-md-6">
+            	 <div class="alert alert-success collapse" role="alert"
+                    id="miAlerta"><span><strong>{{ alerta.titulo }} :</strong>&nbsp;{{ alerta.mensaje }}.</span><i class="fa fa-close close" v-on:click="cerrarAlerta();"></i></div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Categoria</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(cat,index) in categorias" @click="seleccionarFila(index)" v-bind:class="{'font-weight-bold': (categoriaSelected == index) && (seleccionado==1)}">
+                                <td>{{ cat.idCategoria }}</td>
+                                <td>{{ cat.nombreCategoria }}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+         <div class="modal fade" role="dialog" tabindex="-1" id="modalAgregar">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Categoria</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <form>                        
+                        <div class="form-group row"><label class="col-form-label col-2">Nombre:</label><input class="form-control col-6" type="text" v-model="categoria.nombreCategoria"></div>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                	<button class="btn btn-primary" type="button" @click="agregarCategoria">Save</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalModificar">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Categoria</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <form>                        
+                        <div class="form-group row"><label class="col-form-label col-2">Nombre:</label><input class="form-control col-6" type="text" v-model="categoria.nombreCategoria" ></div>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button" @click="modificarCategoria">Save</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalEliminar">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Elimnar Categoria</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <p>Estas seguro de eliminar categoria</p>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Cancelar</button><button class="btn btn-primary" type="button" @click="eliminarCategoria">Eliminar</button></div>
+            </div>
+        </div>
+    </div>
+    </div>
+   
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <!-- <script src="assets/js/funciones.js"></script> -->
+    <script src="assets/js/vue.js"></script>
+    <script src="assets/js/axios.min.js"></script>
+    <script src="assets/js/categorias.js"></script>
+
+</body>
+
+</html>
